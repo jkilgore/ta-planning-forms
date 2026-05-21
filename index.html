@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sermon Series — The Ascent Church</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e4e0d8;
+    --text-primary: #1a1815;
+    --text-secondary: #6b6560;
+    --text-muted: #9e9891;
+    --accent: #2c4a3e;
+    --accent-light: #e8f0ed;
+    --accent-mid: #4a7a68;
+    --input-bg: #fafaf8;
+    --input-focus: #2c4a3e;
+    --badge-test-bg: #fef3cd;
+    --badge-test-fg: #856404;
+    --badge-prod-bg: #d1e7dd;
+    --badge-prod-fg: #0f5132;
+    --success-bg: #d1e7dd;
+    --success-fg: #0f5132;
+    --error-bg: #f8d7da;
+    --error-fg: #842029;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    background: var(--accent);
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+
+  .logo-mark {
+    width: 38px; height: 38px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .header-text h1 {
+    font-family: 'Lora', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .header-text p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 1px;
+    font-weight: 300;
+  }
+
+  .env-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .env-badge {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .badge-test { background: var(--badge-test-bg); color: var(--badge-test-fg); }
+  .badge-prod { background: var(--badge-prod-bg); color: var(--badge-prod-fg); }
+
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .toggle-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    user-select: none;
+  }
+
+  .toggle-track {
+    width: 38px; height: 22px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .toggle-track.prod { background: var(--accent-mid); border-color: var(--accent-mid); }
+
+  .toggle-thumb {
+    width: 16px; height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 3px;
+    transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .toggle-track.prod .toggle-thumb { left: 19px; }
+
+  main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .field { margin-bottom: 1rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .field-row:last-child { margin-bottom: 0; }
+  .field-row .field { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+  }
+
+  label .required {
+    color: #c0392b;
+    margin-left: 2px;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(44,74,62,0.08);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.55;
+  }
+
+  .week-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .week-card:last-child { margin-bottom: 0; }
+
+  .week-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .week-num {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .week-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.25rem;
+  }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .btn:hover { background: var(--bg); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover { background: #243d33; border-color: #243d33; }
+
+  .btn:active { transform: scale(0.98); }
+
+  .status {
+    margin-top: 1rem;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: none;
+    font-weight: 400;
+  }
+
+  .status.show { display: block; }
+  .status.success { background: var(--success-bg); color: var(--success-fg); }
+  .status.error { background: var(--error-bg); color: var(--error-fg); }
+
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 560px) {
+    header { padding: 1.25rem 1.25rem; }
+    main { padding: 1.25rem 1rem 3rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .env-toggle { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">A</div>
+    <div class="header-text">
+      <h1>The Ascent Church</h1>
+      <p>Sermon Series Input</p>
+    </div>
+  </div>
+  <div class="env-toggle">
+    <span class="env-badge badge-test" id="env-badge">Test</span>
+    <div class="toggle-wrap" onclick="toggleEnv()">
+      <span class="toggle-label">Production</span>
+      <div class="toggle-track" id="toggle-track">
+        <div class="toggle-thumb"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Series Details -->
+  <div class="section-card">
+    <p class="section-title">Series Details</p>
+
+    <div class="field">
+      <label for="series-name">Series name <span class="required">*</span></label>
+      <input type="text" id="series-name" placeholder="e.g. Rooted" />
+    </div>
+
+    <div class="field">
+      <label for="series-desc">Series description</label>
+      <textarea id="series-desc" placeholder="Brief overview of the series theme or arc..."></textarea>
+    </div>
+
+    <div class="field">
+      <label for="ministry-goal">Ministry goal</label>
+      <input type="text" id="ministry-goal" placeholder="Knowing God / Spiritual Practices &amp; Worldview / Discipleship Mindset" />
+    </div>
+
+    <div class="field">
+      <label for="series-scripture">Series scripture reference</label>
+      <input type="text" id="series-scripture" placeholder="e.g. Colossians 2:6-7" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="start-date">Start Sunday <span class="required">*</span></label>
+        <input type="date" id="start-date" />
+      </div>
+      <div class="field">
+        <label for="num-weeks">Number of weeks <span class="required">*</span></label>
+        <input type="number" id="num-weeks" min="1" max="26" value="4" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Messages -->
+  <div class="section-card">
+    <p class="section-title">Weekly Messages</p>
+    <div id="weeks-container"></div>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn" onclick="resetForm()">Reset</button>
+    <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">Submit series</button>
+  </div>
+
+  <div class="status" id="status-msg"></div>
+
+</main>
+
+<script>
+  const URLS = {
+    test: 'https://n8n.theascent.ch/webhook-test/2287bc6e-a415-4024-99b1-c3d618137b36',
+    prod: 'https://n8n.theascent.ch/webhook/2287bc6e-a415-4024-99b1-c3d618137b36'
+  };
+
+  let isProd = false;
+
+  function toggleEnv() {
+    isProd = !isProd;
+    const track = document.getElementById('toggle-track');
+    const badge = document.getElementById('env-badge');
+    track.classList.toggle('prod', isProd);
+    badge.textContent = isProd ? 'Production' : 'Test';
+    badge.className = 'env-badge ' + (isProd ? 'badge-prod' : 'badge-test');
+  }
+
+  function addDays(dateStr, days) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function buildWeeks() {
+    const n = Math.min(Math.max(parseInt(document.getElementById('num-weeks').value) || 0, 0), 26);
+    const startDate = document.getElementById('start-date').value;
+    const container = document.getElementById('weeks-container');
+
+    // Preserve existing values
+    const prev = {};
+    container.querySelectorAll('.week-card').forEach(card => {
+      const i = card.dataset.week;
+      prev[i] = {
+        title:     card.querySelector('.w-title').value,
+        desc:      card.querySelector('.w-desc').value,
+        speaker:   card.querySelector('.w-speaker').value,
+        scripture: card.querySelector('.w-scripture').value,
+        takeaway:  card.querySelector('.w-takeaway').value
+      };
+    });
+
+    container.innerHTML = '';
+
+    for (let i = 1; i <= n; i++) {
+      const dateLabel = startDate ? addDays(startDate, (i - 1) * 7) : `Week ${i}`;
+      const p = prev[i] || {};
+      const card = document.createElement('div');
+      card.className = 'week-card';
+      card.dataset.week = i;
+      card.innerHTML = `
+        <div class="week-header">
+          <span class="week-num">Week ${i}</span>
+          <span class="week-date">${dateLabel}</span>
+        </div>
+        <div class="field">
+          <label>Message title</label>
+          <input type="text" class="w-title" placeholder="e.g. The Narrow Gate" value="${esc(p.title)}" />
+        </div>
+        <div class="field">
+          <label>Message description</label>
+          <textarea class="w-desc" placeholder="What this message covers...">${esc(p.desc)}</textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Speaker</label>
+            <input type="text" class="w-speaker" placeholder="Andrew Wingo" value="${esc(p.speaker)}" />
+          </div>
+          <div class="field">
+            <label>Scripture reference</label>
+            <input type="text" class="w-scripture" placeholder="e.g. Matthew 7:13-14" value="${esc(p.scripture)}" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Takeaway / challenge</label>
+          <input type="text" class="w-takeaway" placeholder="One practical application for the congregation..." value="${esc(p.takeaway)}" />
+        </div>
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  function esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  document.getElementById('num-weeks').addEventListener('input', buildWeeks);
+  document.getElementById('start-date').addEventListener('change', buildWeeks);
+  buildWeeks();
+
+  function collectData() {
+    const weeks = [];
+    document.querySelectorAll('.week-card').forEach((card, idx) => {
+      weeks.push({
+        week:               idx + 1,
+        messageTitle:       card.querySelector('.w-title').value.trim(),
+        messageDescription: card.querySelector('.w-desc').value.trim(),
+        speaker:            card.querySelector('.w-speaker').value.trim(),
+        scriptureReference: card.querySelector('.w-scripture').value.trim(),
+        takeaway:           card.querySelector('.w-takeaway').value.trim()
+      });
+    });
+    return {
+      seriesName:        document.getElementById('series-name').value.trim(),
+      seriesDescription: document.getElementById('series-desc').value.trim(),
+      ministryGoal:      document.getElementById('ministry-goal').value.trim(),
+      seriesScripture:   document.getElementById('series-scripture').value.trim(),
+      startDate:         document.getElementById('start-date').value,
+      numberOfWeeks:     parseInt(document.getElementById('num-weeks').value),
+      submittedAt:       new Date().toISOString(),
+      environment:       isProd ? 'production' : 'test',
+      weeks
+    };
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('status-msg');
+    el.textContent = msg;
+    el.className = 'status show ' + type;
+    if (type === 'success') {
+      setTimeout(() => { el.className = 'status'; }, 6000);
+    }
+  }
+
+  async function submitForm() {
+    const data = collectData();
+
+    if (!data.seriesName)  { showStatus('Series name is required.', 'error'); return; }
+    if (!data.startDate)   { showStatus('Start Sunday is required.', 'error'); return; }
+    if (!data.numberOfWeeks || data.numberOfWeeks < 1) { showStatus('Number of weeks must be at least 1.', 'error'); return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    try {
+      const res = await fetch(isProd ? URLS.prod : URLS.test, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        showStatus(`Series "${data.seriesName}" submitted successfully to ${isProd ? 'production' : 'test'}.`, 'success');
+        if (!isProd) resetForm();
+      } else {
+        showStatus(`Submission failed (HTTP ${res.status}). Check that n8n is listening on the ${isProd ? 'production' : 'test'} trigger.`, 'error');
+      }
+    } catch (e) {
+      showStatus('Network error — check that your n8n instance is reachable.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit series';
+    }
+  }
+
+  function resetForm() {
+    ['series-name', 'series-desc', 'ministry-goal', 'series-scripture', 'start-date'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('num-weeks').value = 4;
+    buildWeeks();
+    document.getElementById('status-msg').className = 'status';
+  }
+</script>
+
+</body>
+</html>
