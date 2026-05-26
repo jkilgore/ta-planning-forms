@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Announcements — The Ascent Church</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e4e0d8;
+    --text-primary: #1a1815;
+    --text-secondary: #6b6560;
+    --text-muted: #9e9891;
+    --accent: #2c4a3e;
+    --accent-light: #e8f0ed;
+    --accent-mid: #4a7a68;
+    --input-bg: #fafaf8;
+    --badge-test-bg: #fef3cd;
+    --badge-test-fg: #856404;
+    --badge-prod-bg: #d1e7dd;
+    --badge-prod-fg: #0f5132;
+    --success-bg: #d1e7dd;
+    --success-fg: #0f5132;
+    --error-bg: #f8d7da;
+    --error-fg: #842029;
+    --sunday-bg: #f0f5f3;
+    --sunday-border: #c8ddd7;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--accent);
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+
+  .logo-mark {
+    width: 38px; height: 38px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 16px; font-weight: 600;
+    color: #fff;
+  }
+
+  .header-text h1 {
+    font-family: 'Lora', serif;
+    font-size: 17px; font-weight: 500;
+    color: #fff;
+  }
+
+  .header-text p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 1px; font-weight: 300;
+  }
+
+  .env-toggle { display: flex; align-items: center; gap: 10px; }
+
+  .env-badge {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px;
+    min-width: 80px; text-align: center;
+  }
+
+  .badge-test { background: var(--badge-test-bg); color: var(--badge-test-fg); }
+  .badge-prod { background: var(--badge-prod-bg); color: var(--badge-prod-fg); }
+
+  .toggle-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .toggle-label { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 300; user-select: none; }
+
+  .toggle-track {
+    width: 38px; height: 22px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 11px; position: relative;
+    transition: background 0.2s;
+  }
+
+  .toggle-track.prod { background: var(--accent-mid); border-color: var(--accent-mid); }
+
+  .toggle-thumb {
+    width: 16px; height: 16px;
+    background: #fff; border-radius: 50%;
+    position: absolute; top: 2px; left: 3px;
+    transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .toggle-track.prod .toggle-thumb { left: 19px; }
+
+  main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .field { margin-bottom: 1rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .field-row:last-child { margin-bottom: 0; }
+  .field-row .field { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 13px; font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+  }
+
+  label .required { color: #c0392b; margin-left: 2px; }
+
+  label .hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-left: 6px;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 300;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(44,74,62,0.08);
+  }
+
+  textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+  textarea.script { min-height: 160px; }
+
+  /* Sunday preview pills */
+  .sunday-preview {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .sunday-pill {
+    background: var(--sunday-bg);
+    border: 1px solid var(--sunday-border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s;
+  }
+
+  .sunday-pill.empty {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sunday-pill-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-right: 2px;
+  }
+
+  /* Bullet list builder */
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .bullet-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bullet-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-mid);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
+  .bullet-row input { flex: 1; margin: 0; }
+
+  .bullet-remove {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 16px; line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .bullet-remove:hover { background: var(--error-bg); color: var(--error-fg); border-color: var(--error-fg); }
+
+  .btn-add-bullet {
+    margin-top: 8px;
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .btn-add-bullet:hover { border-color: var(--accent-mid); color: var(--accent); }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.25rem;
+  }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 400;
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .btn:hover { background: var(--bg); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover { background: #243d33; border-color: #243d33; }
+  .btn:active { transform: scale(0.98); }
+
+  .status {
+    margin-top: 1rem;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: none;
+    font-weight: 400;
+  }
+
+  .status.show { display: block; }
+  .status.success { background: var(--success-bg); color: var(--success-fg); }
+  .status.error { background: var(--error-bg); color: var(--error-fg); }
+
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 560px) {
+    header { padding: 1.25rem; }
+    main { padding: 1.25rem 1rem 3rem; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">A</div>
+    <div class="header-text">
+      <h1>The Ascent Church</h1>
+      <p>Announcement Submission</p>
+    </div>
+  </div>
+  <div class="env-toggle">
+    <span class="env-badge badge-test" id="env-badge">Test</span>
+    <div class="toggle-wrap" onclick="toggleEnv()">
+      <span class="toggle-label">Production</span>
+      <div class="toggle-track" id="toggle-track">
+        <div class="toggle-thumb"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Event Details -->
+  <div class="section-card">
+    <p class="section-title">Event Details</p>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="event-name">Event name <span class="required">*</span></label>
+        <input type="text" id="event-name" placeholder="e.g. Summer Serve Day" />
+      </div>
+      <div class="field">
+        <label for="submitted-by">Submitted by <span class="required">*</span></label>
+        <input type="text" id="submitted-by" placeholder="Your name" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="event-date">Event date <span class="required">*</span></label>
+        <input type="date" id="event-date" oninput="updateSundayPreview()" onchange="updateSundayPreview()" />
+      </div>
+      <div class="field">
+        <label for="cta-link">Call to action / link</label>
+        <input type="url" id="cta-link" placeholder="https://theascent.ch/..." />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>
+        Announcement Sundays
+        <span class="hint">— calculated from event date</span>
+      </label>
+      <div class="sunday-preview">
+        <div class="sunday-pill empty" id="sunday-1">
+          <span class="sunday-pill-label">1st</span>
+          <span id="sunday-1-date">—</span>
+        </div>
+        <div class="sunday-pill empty" id="sunday-2">
+          <span class="sunday-pill-label">2nd</span>
+          <span id="sunday-2-date">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Announcement Content -->
+  <div class="section-card">
+    <p class="section-title">Announcement Content</p>
+
+    <div class="field">
+      <label>Bullet points <span class="hint">— short list for slides / bulletin</span></label>
+      <div class="bullet-list" id="bullet-list">
+        <div class="bullet-row">
+          <span class="bullet-dot"></span>
+          <input type="text" class="bullet-input" placeholder="e.g. Free event — all ages welcome" />
+          <button class="bullet-remove" onclick="removeBullet(this)" title="Remove">×</button>
+        </div>
+      </div>
+      <button class="btn-add-bullet" onclick="addBullet()">+ Add bullet point</button>
+    </div>
+
+    <div class="field">
+      <label for="announcement-script">Announcement script <span class="hint">— full spoken script for stage</span></label>
+      <textarea id="announcement-script" class="script" placeholder="Write the full announcement as it will be spoken from stage..."></textarea>
+    </div>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn" onclick="resetForm()">Reset</button>
+    <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">Submit announcement</button>
+  </div>
+
+  <div class="status" id="status-msg"></div>
+
+</main>
+
+<script>
+  const URLS = {
+    test: 'ANNOUNCEMENTS_TEST_WEBHOOK_URL',
+    prod: 'ANNOUNCEMENTS_PROD_WEBHOOK_URL'
+  };
+
+  let isProd = false;
+
+  function toggleEnv() {
+    isProd = !isProd;
+    document.getElementById('toggle-track').classList.toggle('prod', isProd);
+    const badge = document.getElementById('env-badge');
+    badge.textContent = isProd ? 'Production' : 'Test';
+    badge.className = 'env-badge ' + (isProd ? 'badge-prod' : 'badge-test');
+  }
+
+  // ── Sunday calculation ──────────────────────────────────────────────
+  // Returns the Sunday on or before a given date
+  function prevSunday(date) {
+    const d = new Date(date);
+    d.setDate(d.getDate() - d.getDay()); // rewind to Sunday
+    return d;
+  }
+
+  // Given event date, return the two Sundays prior (not the event Sunday itself)
+  function getTwoSundaysBefore(dateStr) {
+    if (!dateStr) return [null, null];
+    const event = new Date(dateStr + 'T00:00:00');
+
+    // Start from the Sunday of the event week, then go back
+    let sunday = prevSunday(event);
+
+    // If the event IS on a Sunday, step back one week first
+    if (event.getDay() === 0) sunday.setDate(sunday.getDate() - 7);
+
+    const second = new Date(sunday);
+    const first  = new Date(sunday);
+    first.setDate(first.getDate() - 7);
+
+    return [first, second];
+  }
+
+  function formatDate(d) {
+    if (!d) return '—';
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function updateSundayPreview() {
+    const dateStr = document.getElementById('event-date').value;
+    const [s1, s2] = getTwoSundaysBefore(dateStr);
+
+    const pill1 = document.getElementById('sunday-1');
+    const pill2 = document.getElementById('sunday-2');
+
+    if (s1 && s2) {
+      document.getElementById('sunday-1-date').textContent = formatDate(s1);
+      document.getElementById('sunday-2-date').textContent = formatDate(s2);
+      pill1.classList.remove('empty');
+      pill2.classList.remove('empty');
+    } else {
+      pill1.classList.add('empty');
+      pill2.classList.add('empty');
+    }
+  }
+
+  // ── Bullet list ─────────────────────────────────────────────────────
+  function addBullet() {
+    const list = document.getElementById('bullet-list');
+    const row = document.createElement('div');
+    row.className = 'bullet-row';
+    row.innerHTML = `
+      <span class="bullet-dot"></span>
+      <input type="text" class="bullet-input" placeholder="Add a bullet point..." />
+      <button class="bullet-remove" onclick="removeBullet(this)" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+  }
+
+  function removeBullet(btn) {
+    const list = document.getElementById('bullet-list');
+    if (list.querySelectorAll('.bullet-row').length <= 1) {
+      btn.closest('.bullet-row').querySelector('input').value = '';
+      return;
+    }
+    btn.closest('.bullet-row').remove();
+  }
+
+  function getBullets() {
+    return Array.from(document.querySelectorAll('.bullet-input'))
+      .map(i => i.value.trim())
+      .filter(Boolean);
+  }
+
+  // ── Collect + submit ────────────────────────────────────────────────
+  function collectData() {
+    const dateStr = document.getElementById('event-date').value;
+    const [s1, s2] = getTwoSundaysBefore(dateStr);
+
+    return {
+      eventName:            document.getElementById('event-name').value.trim(),
+      submittedBy:          document.getElementById('submitted-by').value.trim(),
+      eventDate:            dateStr,
+      ctaLink:              document.getElementById('cta-link').value.trim(),
+      announcementSundays:  [
+        s1 ? s1.toISOString().split('T')[0] : null,
+        s2 ? s2.toISOString().split('T')[0] : null
+      ],
+      bulletPoints:         getBullets(),
+      announcementScript:   document.getElementById('announcement-script').value.trim(),
+      submittedAt:          new Date().toISOString(),
+      environment:          isProd ? 'production' : 'test'
+    };
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('status-msg');
+    el.textContent = msg;
+    el.className = 'status show ' + type;
+    if (type === 'success') setTimeout(() => { el.className = 'status'; }, 6000);
+  }
+
+  async function submitForm() {
+    const data = collectData();
+
+    if (!data.eventName)   { showStatus('Event name is required.', 'error'); return; }
+    if (!data.submittedBy) { showStatus('Submitted by is required.', 'error'); return; }
+    if (!data.eventDate)   { showStatus('Event date is required.', 'error'); return; }
+    if (data.bulletPoints.length === 0) { showStatus('Add at least one bullet point.', 'error'); return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    try {
+      const res = await fetch(isProd ? URLS.prod : URLS.test, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        showStatus(`"${data.eventName}" submitted. n8n will write announcement records for ${formatDate(new Date(data.announcementSundays[0] + 'T00:00:00'))} and ${formatDate(new Date(data.announcementSundays[1] + 'T00:00:00'))}.`, 'success');
+        if (!isProd) resetForm();
+      } else {
+        showStatus(`Submission failed (HTTP ${res.status}). Check n8n is listening on the ${isProd ? 'production' : 'test'} trigger.`, 'error');
+      }
+    } catch (e) {
+      showStatus('Network error — check that your n8n instance is reachable.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit announcement';
+    }
+  }
+
+  function resetForm() {
+    ['event-name', 'submitted-by', 'event-date', 'cta-link', 'announcement-script'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('bullet-list').innerHTML = `
+      <div class="bullet-row">
+        <span class="bullet-dot"></span>
+        <input type="text" class="bullet-input" placeholder="e.g. Free event — all ages welcome" />
+        <button class="bullet-remove" onclick="removeBullet(this)" title="Remove">×</button>
+      </div>`;
+    document.getElementById('sunday-1').classList.add('empty');
+    document.getElementById('sunday-2').classList.add('empty');
+    document.getElementById('status-msg').className = 'status';
+  }
+</script>
+
+</body>
+</html>
