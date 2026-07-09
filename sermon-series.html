@@ -321,10 +321,10 @@
     </div>
   </div>
   <div class="env-toggle">
-    <span class="env-badge badge-test" id="env-badge">Test</span>
+    <span class="env-badge badge-prod" id="env-badge">Production</span>
     <div class="toggle-wrap" onclick="toggleEnv()">
       <span class="toggle-label">Production</span>
-      <div class="toggle-track" id="toggle-track">
+      <div class="toggle-track prod" id="toggle-track">
         <div class="toggle-thumb"></div>
       </div>
     </div>
@@ -390,7 +390,7 @@
     prod: 'https://n8n.theascent.ch/webhook/2287bc6e-a415-4024-99b1-c3d618137b36'
   };
 
-  let isProd = false;
+  let isProd = true;
 
   function toggleEnv() {
     isProd = !isProd;
