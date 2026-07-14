@@ -192,6 +192,35 @@
   textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
   textarea.script { min-height: 160px; }
 
+  /* Sunday count control */
+  .sunday-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .sunday-count-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .sunday-count-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 0;
+  }
+
+  .sunday-count-input {
+    width: 54px !important;
+    padding: 5px 8px !important;
+    font-size: 13px !important;
+    text-align: center;
+  }
+
   /* Sunday preview pills */
   .sunday-preview {
     display: flex;
@@ -391,20 +420,19 @@
     </div>
 
     <div class="field">
-      <label>
-        Announcement Sundays
-        <span class="hint">— calculated from event date</span>
-      </label>
-      <div class="sunday-preview">
-        <div class="sunday-pill empty" id="sunday-1">
-          <span class="sunday-pill-label">1st</span>
-          <span id="sunday-1-date">—</span>
-        </div>
-        <div class="sunday-pill empty" id="sunday-2">
-          <span class="sunday-pill-label">2nd</span>
-          <span id="sunday-2-date">—</span>
+      <div class="sunday-label-row">
+        <label style="margin-bottom:0;">
+          Announcement Sundays
+          <span class="hint">— calculated from event date</span>
+        </label>
+        <div class="sunday-count-wrap">
+          <label for="num-sundays" class="sunday-count-label">Number of Sundays</label>
+          <input type="number" id="num-sundays" min="1" max="8" value="2"
+            oninput="updateSundayPreview()" onchange="updateSundayPreview()"
+            class="sunday-count-input" />
         </div>
       </div>
+      <div class="sunday-preview" id="sunday-preview"></div>
     </div>
   </div>
 
@@ -456,29 +484,30 @@
   }
 
   // ── Sunday calculation ──────────────────────────────────────────────
-  // Returns the Sunday on or before a given date
   function prevSunday(date) {
     const d = new Date(date);
-    d.setDate(d.getDate() - d.getDay()); // rewind to Sunday
+    d.setDate(d.getDate() - d.getDay());
     return d;
   }
 
-  // Given event date, return the two Sundays prior (not the event Sunday itself)
-  function getTwoSundaysBefore(dateStr) {
-    if (!dateStr) return [null, null];
+  function ordinal(n) {
+    const s = ['th','st','nd','rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function getAnnouncementSundays(dateStr, count) {
+    if (!dateStr || count < 1) return [];
     const event = new Date(dateStr + 'T00:00:00');
-
-    // Start from the Sunday of the event week, then go back
-    let sunday = prevSunday(event);
-
-    // If the event IS on a Sunday, step back one week first
-    if (event.getDay() === 0) sunday.setDate(sunday.getDate() - 7);
-
-    const second = new Date(sunday);
-    const first  = new Date(sunday);
-    first.setDate(first.getDate() - 7);
-
-    return [first, second];
+    let anchor = prevSunday(event);
+    if (event.getDay() === 0) anchor.setDate(anchor.getDate() - 7);
+    const sundays = [];
+    for (let i = count - 1; i >= 0; i--) {
+      const d = new Date(anchor);
+      d.setDate(d.getDate() - i * 7);
+      sundays.push(d);
+    }
+    return sundays;
   }
 
   function formatDate(d) {
@@ -488,20 +517,16 @@
 
   function updateSundayPreview() {
     const dateStr = document.getElementById('event-date').value;
-    const [s1, s2] = getTwoSundaysBefore(dateStr);
-
-    const pill1 = document.getElementById('sunday-1');
-    const pill2 = document.getElementById('sunday-2');
-
-    if (s1 && s2) {
-      document.getElementById('sunday-1-date').textContent = formatDate(s1);
-      document.getElementById('sunday-2-date').textContent = formatDate(s2);
-      pill1.classList.remove('empty');
-      pill2.classList.remove('empty');
-    } else {
-      pill1.classList.add('empty');
-      pill2.classList.add('empty');
-    }
+    const count = Math.min(Math.max(parseInt(document.getElementById('num-sundays').value) || 0, 0), 8);
+    const sundays = getAnnouncementSundays(dateStr, count);
+    const container = document.getElementById('sunday-preview');
+    container.innerHTML = '';
+    sundays.forEach((d, i) => {
+      const pill = document.createElement('div');
+      pill.className = 'sunday-pill';
+      pill.innerHTML = `<span class="sunday-pill-label">${ordinal(i + 1)}</span>${formatDate(d)}`;
+      container.appendChild(pill);
+    });
   }
 
   // ── Bullet list ─────────────────────────────────────────────────────
@@ -536,17 +561,16 @@
   // ── Collect + submit ────────────────────────────────────────────────
   function collectData() {
     const dateStr = document.getElementById('event-date').value;
-    const [s1, s2] = getTwoSundaysBefore(dateStr);
+    const count = Math.min(Math.max(parseInt(document.getElementById('num-sundays').value) || 0, 0), 8);
+    const sundays = getAnnouncementSundays(dateStr, count);
 
     return {
       eventName:            document.getElementById('event-name').value.trim(),
       submittedBy:          document.getElementById('submitted-by').value.trim(),
       eventDate:            dateStr,
       ctaLink:              document.getElementById('cta-link').value.trim(),
-      announcementSundays:  [
-        s1 ? s1.toISOString().split('T')[0] : null,
-        s2 ? s2.toISOString().split('T')[0] : null
-      ],
+      numberOfAnnouncementSundays: count,
+      announcementSundays:  sundays.map(d => d.toISOString().split('T')[0]),
       bulletPoints:         getBullets(),
       announcementScript:   document.getElementById('announcement-script').value.trim(),
       submittedAt:          new Date().toISOString(),
@@ -581,7 +605,8 @@
       });
 
       if (res.ok) {
-        showStatus(`"${data.eventName}" submitted. n8n will write announcement records for ${formatDate(new Date(data.announcementSundays[0] + 'T00:00:00'))} and ${formatDate(new Date(data.announcementSundays[1] + 'T00:00:00'))}.`, 'success');
+        const sundayList = data.announcementSundays.map(s => formatDate(new Date(s + 'T00:00:00'))).join(', ');
+        showStatus(`"${data.eventName}" submitted. Announcement records will be created for: ${sundayList}.`, 'success');
         if (!isProd) resetForm();
       } else {
         showStatus(`Submission failed (HTTP ${res.status}). Check n8n is listening on the ${isProd ? 'production' : 'test'} trigger.`, 'error');
@@ -604,8 +629,8 @@
         <input type="text" class="bullet-input" placeholder="e.g. Free event — all ages welcome" />
         <button class="bullet-remove" onclick="removeBullet(this)" title="Remove">×</button>
       </div>`;
-    document.getElementById('sunday-1').classList.add('empty');
-    document.getElementById('sunday-2').classList.add('empty');
+    document.getElementById('num-sundays').value = 2;
+    document.getElementById('sunday-preview').innerHTML = '';
     document.getElementById('status-msg').className = 'status';
   }
 </script>
