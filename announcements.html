@@ -71,6 +71,19 @@
     margin-top: 1px; font-weight: 300;
   }
 
+  .help-link {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .help-link:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
+
   .env-toggle { display: flex; align-items: center; gap: 10px; }
 
   .env-badge {
@@ -339,9 +352,9 @@
     </div>
   </div>
   <div class="env-toggle">
+    <a href="how-to.html" class="help-link">Help</a>
     <span class="env-badge badge-prod" id="env-badge">Production</span>
     <div class="toggle-wrap" onclick="toggleEnv()">
-      <span class="toggle-label">Production</span>
       <div class="toggle-track prod" id="toggle-track">
         <div class="toggle-thumb"></div>
       </div>

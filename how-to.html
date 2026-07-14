@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How to Submit a Sermon Series — The Ascent Church</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #2c4a3e;
+    --accent-mid: #4a7a68;
+    --accent-light: #e8f0ed;
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e4e0d8;
+    --text: #1a1815;
+    --muted: #6b6560;
+    --faint: #9e9891;
+    --step-bg: #f0f5f3;
+    --step-border: #c8ddd7;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .page { max-width: 760px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .page-header {
+    background: var(--accent);
+    border-radius: 14px;
+    padding: 2rem 2.25rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .logo-mark {
+    width: 44px; height: 44px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 18px; font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .header-body h1 {
+    font-family: 'Lora', serif;
+    font-size: 22px; font-weight: 500;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .header-body p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    margin-top: 5px;
+    line-height: 1.6;
+  }
+
+  /* ── Intro ── */
+  .intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.75rem;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .intro strong { color: var(--text); font-weight: 500; }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.75rem;
+    padding-left: 2px;
+  }
+
+  /* ── Step cards ── */
+  .steps { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.75rem; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .step-num {
+    width: 36px; height: 36px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 15px; font-weight: 500;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .step-content h3 {
+    font-family: 'Lora', serif;
+    font-size: 15px; font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .step-content p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .step-content p + p { margin-top: 6px; }
+
+  .fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .field-pill {
+    background: var(--step-bg);
+    border: 1px solid var(--step-border);
+    border-radius: 20px;
+    padding: 3px 11px;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .field-pill.required {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ── Tips box ── */
+  .tips {
+    background: var(--accent-light);
+    border: 1px solid var(--step-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .tips h4 {
+    font-family: 'Lora', serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .tips ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+
+  .tips li {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.55;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+
+  .tips li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-mid);
+    font-size: 12px;
+  }
+
+  /* ── Footer ── */
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--faint);
+    font-weight: 300;
+    line-height: 1.6;
+    padding-top: 0.5rem;
+  }
+
+  .footer-note strong { color: var(--muted); font-weight: 400; }
+
+  @media (max-width: 560px) {
+    body { padding: 1.25rem 1rem 3rem; }
+    .page-header { flex-direction: column; gap: 0.75rem; padding: 1.5rem; }
+    .step { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="logo-mark">A</div>
+    <div class="header-body">
+      <h1>How to Submit a Sermon Series</h1>
+      <p>A quick guide for pastors and teachers — from series idea to submission in minutes.</p>
+    </div>
+  </div>
+
+  <div class="intro">
+    The <strong>Sermon Series form</strong> captures everything the team needs to plan, design, and support an upcoming series — series details, weekly message breakdowns, speakers, and scriptures. Fill it out as early as possible so creative and operations have enough lead time.
+  </div>
+
+  <p class="section-label">Step-by-step</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Open the form &amp; confirm the environment</h3>
+        <p>The form defaults to <strong>Production</strong> — leave it there when submitting a real series. Only switch to <em>Test</em> if you're trying out the form or checking that it works.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>Fill in the Series Details</h3>
+        <p>Start with the big picture — what is this series called, what is it about, and when does it start?</p>
+        <div class="fields">
+          <span class="field-pill required">Series name ✱</span>
+          <span class="field-pill required">Start Sunday ✱</span>
+          <span class="field-pill required">Number of weeks ✱</span>
+          <span class="field-pill">Series description</span>
+          <span class="field-pill">Ministry goal</span>
+          <span class="field-pill">Series scripture</span>
+        </div>
+        <p style="margin-top:10px;">The <strong>Ministry goal</strong> field helps align the series to one of our three tracks: <em>Knowing God</em>, <em>Spiritual Practices &amp; Worldview</em>, or <em>Discipleship Mindset</em>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Review the auto-generated weekly cards</h3>
+        <p>Once you enter a start date and number of weeks, a card appears for each Sunday — pre-labeled with the correct date. Fill in what you know for each week; it's fine to leave fields blank if details aren't finalised yet.</p>
+        <div class="fields">
+          <span class="field-pill">Message title</span>
+          <span class="field-pill">Message description</span>
+          <span class="field-pill">Speaker</span>
+          <span class="field-pill">Scripture reference</span>
+          <span class="field-pill">Takeaway / challenge</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Submit</h3>
+        <p>Click <strong>Submit series</strong>. You'll see a green confirmation message when it goes through. The form will reset automatically in Test mode; in Production it stays filled so you can review what was sent.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tips">
+    <h4>Helpful tips</h4>
+    <ul>
+      <li>Fields marked <strong>✱</strong> are required — you won't be able to submit without them.</li>
+      <li>You can change the number of weeks at any time and the cards will update without losing what you've already typed.</li>
+      <li>The Speaker field defaults to a placeholder — make sure to fill it in, even if it's TBD.</li>
+      <li>Submit early and update later — it's better to get a draft in than to wait until everything is perfect.</li>
+      <li>If the submission fails, check that you're connected to the internet and try again. Contact the operations team if it keeps failing.</li>
+    </ul>
+  </div>
+
+  <p class="footer-note">
+    <strong>Questions?</strong> Reach out to the operations team. &nbsp;·&nbsp; Form built and maintained by The Ascent Church operations.
+  </p>
+
+</div>
+
+</body>
+</html>
